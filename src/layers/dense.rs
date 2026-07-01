@@ -50,7 +50,7 @@ impl Layer for Dense {
     ///
     /// # Errors
     /// Returns a `NNError::InputSizeMismatch` if the input tensor's length doesn't match `input_size`.
-    fn forward(&self, input: &Tensor) -> Result<Tensor, NNError> {
+    fn forward(&mut self, input: &Tensor) -> Result<Tensor, NNError> {
         // Guard clause: Validate that incoming data matches expected dimensions.
         if input.len() != self.input_size {
             return Err(NNError::InputSizeMismatch {

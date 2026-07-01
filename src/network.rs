@@ -11,10 +11,10 @@ impl Network {
         Self { layers }
     }
 
-    pub fn forward(&self, input: Tensor) -> Result<Tensor, NNError> {
+    pub fn forward(&mut self, input: Tensor) -> Result<Tensor, NNError> {
         let mut current = input;
 
-        for layer in &self.layers {
+        for layer in &mut self.layers {
             current = layer.forward(&current)?;
         }
 

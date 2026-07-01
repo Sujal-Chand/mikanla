@@ -1,20 +1,14 @@
 /// Supported mathematical activation functions for the neural network layers.
 #[derive(Debug, Clone, Copy)]
 pub enum Activation {
-    /// No-op activation function. Passes the input through unchanged.
     Linear,
-    /// Rectified Linear Unit. Thresholds negative values to zero.
     ReLU,
-    /// Sigmoid logistic function. Squashes values between 0 and 1.
     Sigmoid,
-    /// Hyperbolic Tangent function. Squashes values between -1 and 1.
     Tanh,
 }
 
 impl Activation {
     /// Applies the activation function to a single scalar value.
-    /// Optimized with `#[inline(always)]` to suggest the compiler replace the function
-    /// call with its literal body for raw performance inside hot loops.
     #[inline(always)]
     pub fn apply(self, x: f32) -> f32 {
         match self {
@@ -28,6 +22,23 @@ impl Activation {
             }
             Activation::Sigmoid => 1.0 / (1.0 + (-x).exp()),
             Activation::Tanh => x.tanh(),
+        }
+    }
+
+    /// Returns the derivative using the activated output value.
+    #[inline(always)]
+    pub fn derivative_from_output(self, activated_output: f32) -> f32 {
+        match self {
+            Activation::Linear => 1.0,
+            Activation::ReLU => {
+                if activated_output > 0.0 {
+                    1.0
+                } else {
+                    0.0
+                }
+            }
+            Activation::Sigmoid => activated_output * (1.0 - activated_output),
+            Activation::Tanh => 1.0 - activated_output.powi(2),
         }
     }
 

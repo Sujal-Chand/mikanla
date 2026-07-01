@@ -1,7 +1,7 @@
 use mikanla::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let network = NetworkBuilder::new()
+    let mut network = NetworkBuilder::new()
         .input(3)
         .dense(4, Activation::ReLU)
         .dense(2, Activation::Sigmoid)

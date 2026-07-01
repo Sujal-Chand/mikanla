@@ -4,5 +4,9 @@ use crate::error::NNError;
 use crate::tensor::Tensor;
 
 pub trait Layer {
-    fn forward(&self, input: &Tensor) -> Result<Tensor, NNError>;
+    /// Computes the forward pass.
+    fn forward(&mut self, input: &Tensor) -> Result<Tensor, NNError>;
+
+    // Computes the backward pass.
+    //fn backward(&mut self, output_gradient: &Tensor) -> Result<Tensor, NNError>;
 }
