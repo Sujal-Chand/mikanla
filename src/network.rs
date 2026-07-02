@@ -20,4 +20,18 @@ impl Network {
 
         Ok(current)
     }
+
+    pub fn backward(
+        &mut self,
+        output_gradient: Tensor,
+        learning_rate: f32,
+    ) -> Result<Tensor, NNError> {
+        let mut current_gradient = output_gradient;
+
+        for layer in self.layers.iter_mut().rev() {
+            current_gradient = layer.backward(&current_gradient, learning_rate)?;
+        }
+
+        Ok(current_gradient)
+    }
 }

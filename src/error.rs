@@ -4,6 +4,7 @@ use std::fmt; // imports the rust formattign module in order to implement the Di
 #[derive(Debug)]
 pub enum NNError {
     InputSizeMismatch { expected: usize, got: usize },
+    MissingForwardPass,
 }
 
 // implment the Display trait for the custom error types
@@ -13,6 +14,12 @@ impl fmt::Display for NNError {
             // handle the InputSizeMismatch error variant
             NNError::InputSizeMismatch { expected, got } => {
                 write!(f, "Input size mismatch: expected {}, got {}", expected, got)
+            }
+            NNError::MissingForwardPass => {
+                write!(
+                    f,
+                    "Missing forward pass: the network must perform a forward pass before this operation"
+                )
             }
         }
     }
