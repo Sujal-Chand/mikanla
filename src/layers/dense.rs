@@ -42,12 +42,6 @@ impl Dense {
             last_output: None,
         }
     }
-
-    /// Helper function to calculate the 1D index of a 2D weight matrix.
-    /// Maps a 2D weight coordinate (output_row, input_col) to a row-major 1D flat index.
-    fn weight_index(&self, output: usize, input: usize) -> usize {
-        output * self.input_size + input
-    }
 }
 
 impl Layer for Dense {
@@ -64,20 +58,20 @@ impl Layer for Dense {
             });
         }
 
+        let input_data = input.data();
+        let weights_data = self.weights.data();
+        let biases_data = self.biases.data();
+
         // Pre-allocate memory for the output vector to avoid dynamic reallocations.
         let mut output = Vec::with_capacity(self.output_size);
 
         // Manually compute the matrix-vector multiplication and add bias: (Input * Weights) + Bias
         for out_i in 0..self.output_size {
-            // Start with the bias for the current output neuron
-            let mut sum = self.biases.data()[out_i];
+            let row_offset = out_i * self.input_size;
+            let mut sum = biases_data[out_i];
 
-            // Compute dot product of the input vector and the weights for this specific neuron
             for in_i in 0..self.input_size {
-                let input_value = input.data()[in_i];
-                let weight_value = self.weights.data()[self.weight_index(out_i, in_i)];
-
-                sum += input_value * weight_value;
+                sum += input_data[in_i] * weights_data[row_offset + in_i];
             }
 
             // Pass the resulting linear combination through the activation function
