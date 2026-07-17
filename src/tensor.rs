@@ -16,8 +16,12 @@ impl Tensor {
         }
     }
 
-    pub fn random(total_size: usize, input_size: usize, output_size: usize) -> Self {
-        let mut rng = rand::rng();
+    pub fn random(
+        total_size: usize,
+        input_size: usize,
+        output_size: usize,
+        rng: &mut impl rand::Rng,
+    ) -> Self {
         let mut data = Vec::with_capacity(total_size);
 
         let limit = (6.0 / (input_size + output_size) as f32).sqrt();

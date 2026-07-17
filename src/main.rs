@@ -2,6 +2,7 @@ use mikanla::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut network = NetworkBuilder::new()
+        .seed(42)
         .input(3)
         .dense(4, Activation::ReLU)
         .dense(2, Activation::Sigmoid)
@@ -11,7 +12,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let target = Tensor::new(vec![1.0, 0.0]);
 
     let config = TrainingConfig::new(1000, 0.01);
-
     let history = network.train(&input, &target, config)?;
 
     let output = network.forward(&input)?;

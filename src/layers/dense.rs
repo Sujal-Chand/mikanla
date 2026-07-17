@@ -29,13 +29,18 @@ impl Dense {
     /// * `input_size` - The expected size of the incoming data vector.
     /// * `output_size` - The number of neurons/outputs this layer will produce.
     /// * `activation` - The non-linear activation function to use.
-    pub fn new(input_size: usize, output_size: usize, activation: Activation) -> Self {
+    pub fn new(
+        input_size: usize,
+        output_size: usize,
+        activation: Activation,
+        rng: &mut impl rand::Rng,
+    ) -> Self {
         Self {
             input_size,
             output_size,
             // Initialises weights randomly and biases to zero.
             // Note: assumes a flattened 1D representation.
-            weights: Tensor::random(input_size * output_size, input_size, output_size),
+            weights: Tensor::random(input_size * output_size, input_size, output_size, rng),
             biases: Tensor::zeros(output_size),
             activation,
             last_input: None,
