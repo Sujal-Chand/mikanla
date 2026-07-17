@@ -1,24 +1,36 @@
 use mikanla::prelude::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // network definition with fixed seed to reproduce same results
     let mut network = NetworkBuilder::new()
         .seed(42)
-        .input(3)
-        .dense(4, Activation::LeakyReLU)
-        .dense(2, Activation::Sigmoid)
+        .input(2)
+        .dense(4, Activation::Tanh)
+        .dense(1, Activation::Sigmoid)
         .build();
 
-    let input = Tensor::new(vec![1.0, 0.5, -0.25]);
-    let target = Tensor::new(vec![1.0, 0.0]);
+    // the dataset that mikanla has to learn (XOR)
+    let dataset = Dataset::new(vec![
+        TrainingSample::new(Tensor::new(vec![0.0, 0.0]), Tensor::new(vec![0.0])),
+        TrainingSample::new(Tensor::new(vec![0.0, 1.0]), Tensor::new(vec![1.0])),
+        TrainingSample::new(Tensor::new(vec![1.0, 0.0]), Tensor::new(vec![1.0])),
+        TrainingSample::new(Tensor::new(vec![1.0, 1.0]), Tensor::new(vec![0.0])),
+    ]);
 
-    let config = TrainingConfig::new(1000, 0.01);
-    let history = network.train(&input, &target, config)?;
+    // network training configuration
+    let training_config = TrainingConfig::new(50_000, 0.01);
 
-    let output = network.forward(&input)?;
-
+    // network history stats
+    let history = network.train_dataset(&dataset, training_config)?;
     println!("\nstarting loss: {}", history.initial_loss());
     println!("final loss: {}", history.final_loss());
-    println!("final output: {:?}", output.data());
 
+    // testing the trained models outputs
+    for sample in dataset.samples() {
+        let output = network.forward(sample.input())?;
+        println!("{:?} -> {:?}", sample.input().data(), output.data());
+    }
+
+    // we f**king did it!
     Ok(())
 }

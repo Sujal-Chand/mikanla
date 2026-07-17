@@ -5,6 +5,7 @@ use std::fmt; // imports the rust formattign module in order to implement the Di
 pub enum NNError {
     InputSizeMismatch { expected: usize, got: usize },
     MissingForwardPass,
+    EmptyDataset,
 }
 
 // implment the Display trait for the custom error types
@@ -20,6 +21,9 @@ impl fmt::Display for NNError {
                     f,
                     "Missing forward pass: the network must perform a forward pass before this operation"
                 )
+            }
+            NNError::EmptyDataset => {
+                write!(f, "Dataset must contain at least one sample")
             }
         }
     }

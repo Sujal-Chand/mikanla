@@ -1,3 +1,4 @@
+use crate::dataset::Dataset;
 use crate::error::NNError;
 use crate::loss::{mse_gradient, mse_loss};
 use crate::network::Network;
@@ -88,5 +89,66 @@ impl Network {
             initial_loss,
             final_loss,
         })
+    }
+
+    pub fn train_dataset(
+        &mut self,
+        dataset: &Dataset,
+        config: TrainingConfig,
+    ) -> Result<TrainingHistory, NNError> {
+        if dataset.is_empty() {
+            return Err(NNError::EmptyDataset);
+        }
+
+        let initial_loss = self.dataset_loss(dataset)?;
+
+        let mut losses = Vec::with_capacity(config.epochs);
+
+        for epoch in 0..config.epochs {
+            let mut total_loss = 0.0;
+
+            for sample in dataset.samples() {
+                let output = self.forward(sample.input())?;
+
+                let loss = mse_loss(&output, sample.target())?;
+                total_loss += loss;
+
+                let gradient = mse_gradient(&output, sample.target())?;
+
+                self.backward(gradient, config.learning_rate)?;
+            }
+
+            let average_loss = total_loss / dataset.len() as f32;
+            losses.push(average_loss);
+
+            if let Some(interval) = config.log_every {
+                if epoch % interval == 0 {
+                    println!("epoch: {epoch}, loss: {average_loss}");
+                }
+            }
+        }
+
+        let final_loss = self.dataset_loss(dataset)?;
+
+        Ok(TrainingHistory {
+            losses,
+            initial_loss,
+            final_loss,
+        })
+    }
+
+    fn dataset_loss(&mut self, dataset: &Dataset) -> Result<f32, NNError> {
+        if dataset.is_empty() {
+            return Err(NNError::EmptyDataset);
+        }
+
+        let mut total_loss = 0.0;
+
+        for sample in dataset.samples() {
+            let output = self.forward(sample.input())?;
+            total_loss += mse_loss(&output, sample.target())?;
+        }
+
+        Ok(total_loss / dataset.len() as f32)
     }
 }
