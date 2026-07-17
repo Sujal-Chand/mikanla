@@ -3,6 +3,7 @@
 pub enum Activation {
     Linear,
     ReLU,
+    LeakyReLU,
     Sigmoid,
     Tanh,
 }
@@ -18,6 +19,13 @@ impl Activation {
                     x
                 } else {
                     0.0
+                }
+            }
+            Activation::LeakyReLU => {
+                if x > 0.0 {
+                    x
+                } else {
+                    0.01 * x
                 }
             }
             Activation::Sigmoid => 1.0 / (1.0 + (-x).exp()),
@@ -37,6 +45,13 @@ impl Activation {
                     0.0
                 }
             }
+            Activation::LeakyReLU => {
+                if activated_output > 0.0 {
+                    1.0
+                } else {
+                    0.01
+                }
+            }
             Activation::Sigmoid => activated_output * (1.0 - activated_output),
             Activation::Tanh => 1.0 - activated_output.powi(2),
         }
@@ -51,6 +66,13 @@ impl Activation {
                 for x in data.iter_mut() {
                     if *x < 0.0 {
                         *x = 0.0;
+                    }
+                }
+            }
+            Activation::LeakyReLU => {
+                for x in data.iter_mut() {
+                    if *x < 0.0 {
+                        *x *= 0.01;
                     }
                 }
             }

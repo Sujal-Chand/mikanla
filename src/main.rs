@@ -4,7 +4,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut network = NetworkBuilder::new()
         .seed(42)
         .input(3)
-        .dense(4, Activation::ReLU)
+        .dense(4, Activation::LeakyReLU)
         .dense(2, Activation::Sigmoid)
         .build();
 

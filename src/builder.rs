@@ -1,5 +1,5 @@
 use rand::SeedableRng;
-use rand::rngs::{StdRng, SysRng};
+use rand::rngs::StdRng;
 
 use crate::activation::Activation;
 use crate::layers::Layer;
@@ -17,7 +17,7 @@ impl NetworkBuilder {
         Self {
             layers: Vec::new(),
             current_size: None,
-            rng: StdRng::try_from_rng(&mut SysRng).unwrap(),
+            rng: rand::make_rng(),
         }
     }
 
