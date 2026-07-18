@@ -10,11 +10,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build();
 
     // the dataset that mikanla has to learn (XOR)
-    let dataset = Dataset::new(vec![
-        TrainingSample::new(Tensor::new(vec![0.0, 0.0]), Tensor::new(vec![0.0])),
-        TrainingSample::new(Tensor::new(vec![0.0, 1.0]), Tensor::new(vec![1.0])),
-        TrainingSample::new(Tensor::new(vec![1.0, 0.0]), Tensor::new(vec![1.0])),
-        TrainingSample::new(Tensor::new(vec![1.0, 1.0]), Tensor::new(vec![0.0])),
+    let dataset = Dataset::from_pairs(vec![
+        (vec![0.0, 0.0], vec![0.0]),
+        (vec![0.0, 1.0], vec![1.0]),
+        (vec![1.0, 0.0], vec![1.0]),
+        (vec![1.0, 1.0], vec![0.0]),
     ]);
 
     // network training configuration
@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // network history stats
     let history = network.train_dataset(&dataset, training_config)?;
-    println!("\nstarting loss: {}", history.initial_loss());
+    println!("starting loss: {}", history.initial_loss());
     println!("final loss: {}", history.final_loss());
 
     // testing the trained models outputs

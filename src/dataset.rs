@@ -11,6 +11,13 @@ impl TrainingSample {
         Self { input, target }
     }
 
+    pub fn from_vecs(input: Vec<f32>, target: Vec<f32>) -> Self {
+        Self {
+            input: Tensor::new(input),
+            target: Tensor::new(target),
+        }
+    }
+
     pub fn input(&self) -> &Tensor {
         &self.input
     }
@@ -27,6 +34,15 @@ pub struct Dataset {
 
 impl Dataset {
     pub fn new(samples: Vec<TrainingSample>) -> Self {
+        Self { samples }
+    }
+
+    pub fn from_pairs(pairs: Vec<(Vec<f32>, Vec<f32>)>) -> Self {
+        let samples = pairs
+            .into_iter()
+            .map(|(input, target)| TrainingSample::from_vecs(input, target))
+            .collect();
+
         Self { samples }
     }
 
