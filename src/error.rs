@@ -8,23 +8,20 @@ pub enum NNError {
     EmptyDataset,
 }
 
-// implment the Display trait for the custom error types
+// implement the Display trait for the custom error types
+#[rustfmt::skip] // skip formatting as causes rust-analyzer issue on macOS VSCode
 impl fmt::Display for NNError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            // handle the InputSizeMismatch error variant
-            NNError::InputSizeMismatch { expected, got } => {
-                write!(f, "Input size mismatch: expected {}, got {}", expected, got)
-            }
-            NNError::MissingForwardPass => {
-                write!(
-                    f,
-                    "Missing forward pass: the network must perform a forward pass before this operation"
-                )
-            }
-            NNError::EmptyDataset => {
-                write!(f, "Dataset must contain at least one sample")
-            }
+            NNError::InputSizeMismatch { expected, got } => write!(
+                f, 
+                "Input size mismatch: expected {}, got {}", expected, got
+            ),
+            NNError::MissingForwardPass => write!(
+                f,
+                "Missing forward pass: the network must perform a forward pass before this operation"
+            ),
+            NNError::EmptyDataset => write!(f, "Dataset must contain at least one sample"),
         }
     }
 }
