@@ -1,4 +1,4 @@
-use std::fmt; // imports the rust formattign module in order to implement the Display trait
+use std::fmt; // imports the rust formatting module in order to implement the Display trait
 
 // create a custom error type for the neural network library
 #[derive(Debug)]
