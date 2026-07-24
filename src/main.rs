@@ -5,9 +5,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut network = NetworkBuilder::new()
         .seed(42)
         .input(2)
-        .dense(4, Activation::Tanh)
-        .dense(1, Activation::Sigmoid)
-        .build();
+        .dense(4)
+        .activation(Activation::Tanh)
+        .dense(1)
+        .activation(Activation::Sigmoid)
+        .build()?;
 
     // the dataset that mikanla has to learn (XOR)
     let dataset = Dataset::from_pairs(vec![

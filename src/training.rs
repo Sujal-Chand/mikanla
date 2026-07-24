@@ -74,10 +74,10 @@ impl Network {
 
             losses.push(loss);
 
-            if let Some(interval) = config.log_every {
-                if epoch % interval == 0 {
-                    println!("epoch: {epoch}, loss: {loss}");
-                }
+            if let Some(interval) = config.log_every
+                && epoch % interval == 0
+            {
+                println!("epoch: {epoch}, loss: {loss}");
             }
         }
 
@@ -121,10 +121,10 @@ impl Network {
             let average_loss = total_loss / dataset.len() as f32;
             losses.push(average_loss);
 
-            if let Some(interval) = config.log_every {
-                if epoch % interval == 0 {
-                    println!("epoch: {epoch}, loss: {average_loss}");
-                }
+            if let Some(interval) = config.log_every
+                && epoch % interval == 0
+            {
+                println!("epoch: {epoch}, loss: {average_loss}");
             }
         }
 

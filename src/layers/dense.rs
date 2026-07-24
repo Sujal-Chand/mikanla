@@ -71,9 +71,9 @@ impl Layer for Dense {
         let mut output = Vec::with_capacity(self.output_size);
 
         // Manually compute the matrix-vector multiplication and add bias: (Input * Weights) + Bias
-        for out_i in 0..self.output_size {
+        for (out_i, bias) in biases_data.iter().enumerate() {
             let row_offset = out_i * self.input_size;
-            let mut sum = biases_data[out_i];
+            let mut sum = *bias;
 
             for in_i in 0..self.input_size {
                 sum += input_data[in_i] * weights_data[row_offset + in_i];

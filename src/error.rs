@@ -6,6 +6,10 @@ pub enum NNError {
     InputSizeMismatch { expected: usize, got: usize },
     MissingForwardPass,
     EmptyDataset,
+    DenseLayerBeforeInput,
+    ActivationBeforeLayer,
+    ActivationAlreadyAssigned { layer_index: usize },
+    MissingActivation { layer_index: usize },
 }
 
 // implement the Display trait for the custom error types
@@ -22,6 +26,22 @@ impl fmt::Display for NNError {
                 "Missing forward pass: the network must perform a forward pass before this operation"
             ),
             NNError::EmptyDataset => write!(f, "Dataset must contain at least one sample"),
+            NNError::DenseLayerBeforeInput => write!(
+                f,
+                "Cannot add a dense layer before specifying the input size"
+            ),
+            NNError::ActivationBeforeLayer => write!(
+                f,
+                "Cannot assign an activation before adding a layer"
+            ),
+            NNError::ActivationAlreadyAssigned { layer_index } => write!(
+                f,
+                "Layer at index {} already has an activation assigned", layer_index
+            ),
+            NNError::MissingActivation { layer_index } => write!(
+                f,
+                "Layer at index {} does not have an activation assigned", layer_index
+            ),
         }
     }
 }

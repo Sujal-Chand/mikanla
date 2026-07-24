@@ -45,37 +45,37 @@ mikanla currently includes:
 ```rust
 use mikanla::prelude::*;
 
-fn main() -> Result<(), NNError> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // network definition with fixed seed to reproduce the same results
     let mut network = NetworkBuilder::new()
-        .input(2)
-        .dense(4, Activation::Tanh)
-        .dense(1, Activation::Sigmoid)
         .seed(42)
+        .input(2)
+        .dense(4)
+        .activation(Activation::Tanh)
+        .dense(1)
+        .activation(Activation::Sigmoid)
         .build()?;
 
+    // the dataset that mikanla has to learn
     let dataset = Dataset::from_pairs(vec![
         (vec![0.0, 0.0], vec![0.0]),
         (vec![0.0, 1.0], vec![1.0]),
         (vec![1.0, 0.0], vec![1.0]),
         (vec![1.0, 1.0], vec![0.0]),
-    ])?;
+    ]);
 
-    let config = TrainingConfig {
-        epochs: 50_000,
-        learning_rate: 0.01,
-        log_every: Some(5_000),
-    };
+    // network training configuration
+    let training_config = TrainingConfig::new(50_000, 0.01);
 
-    network.train(&dataset, &config)?;
+    // network training history
+    let history = network.train_dataset(&dataset, training_config)?;
+    println!("starting loss: {}", history.initial_loss());
+    println!("final loss: {}", history.final_loss());
 
+    // test the trained model
     for sample in dataset.samples() {
-        let prediction = network.forward(sample.input())?;
-
-        println!(
-            "{:?} -> {:?}",
-            sample.input().data(),
-            prediction.data()
-        );
+        let output = network.forward(sample.input())?;
+        println!("{:?} -> {:?}", sample.input().data(), output.data());
     }
 
     Ok(())
